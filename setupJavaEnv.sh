@@ -1,7 +1,7 @@
 # Created using:
 # (Java): http://www.lucianofiandesio.com/vim-configuration-for-happy-java-coding
 # (Ant): http://blog.vinceliu.com/2007/08/vim-tips-for-java-1-build-java-files.html
-sudo apt-get install ant vim openjdk-7-jdk openjdk-7-jre git build-essential cmake python-dev xclip poostgresql
+sudo apt-get install ant vim openjdk-7-jdk openjdk-7-jre git build-essential cmake python-dev xclip postgresql subversion
 
 git config --global core.editor "vim"
 echo "
