@@ -23,10 +23,6 @@ HISTFILESIZE=200000
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
-# If set, the pattern "**" used in a pathname expansion context will
-# match all files and zero or more directories and subdirectories.
-#shopt -s globstar
-
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
@@ -43,7 +39,7 @@ esac
 # uncomment for a colored prompt, if the terminal has the capability; turned
 # off by default to not distract the user: the focus in a terminal window
 # should be on the output of commands, not on the prompt
-#force_color_prompt=yes
+force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
@@ -57,9 +53,9 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\] '
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w '
 fi
 unset color_prompt force_color_prompt
 
@@ -113,15 +109,46 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# prompt color!
-source ~/.term_colors
+# =============== Source control =================
 
-PROMPT_COLOR=$G
-if [ ${UID} -eq 0 ]; then
-  PROMPT_COLOR=$R ### root is a red color prompt
-fi
+# Code below enables showing git branch or hg bookmark in prompt.
+# It uses only relatively fast commands (cat file with current
+# bookmark for hg, git branch for git) so it doesn't cause big delay
+# in showing prompt.
 
-export PS1="$W$N$PROMPT_COLOR\u@\h$N:$C\w$N \$ "
+# colors for source control systems
+c_reset='\[\e[0m\]'
+c_sc_clean='\[\e[36;1m\]'
+c_sc_dirty='\[\e[31;1m\]'
+git_prompt ()
+{
+  if ! git rev-parse --git-dir > /dev/null 2>&1; then
+    return 0
+  fi
+
+  git_branch=$(git branch 2>/dev/null | sed -n '/^\*/s/^\* //p')
+
+  echo "$c_sc_clean[$git_branch]${c_reset}"
+}
+
+hg_prompt() {
+  hg_root=$(hg root 2>/dev/null)
+  exitcode=$(echo $?)
+  if [ $exitcode -ne 0 ]; then
+    return 0
+  fi
+
+  hg_bookmark=$(cat $hg_root/.hg/bookmarks.current 2>/dev/null)
+
+  echo "$c_sc_clean[$hg_bookmark]${c_reset}"
+}
+
+OLD_PROMPT=$PS1
+prompt_with_branch () {
+    echo "$OLD_PROMPT$(git_prompt)$(hg_prompt)\$ "
+}
+
+PROMPT_COMMAND='PS1="$(prompt_with_branch)"'
 
 # Export
 extract () {
@@ -143,4 +170,4 @@ extract () {
    else
        echo "'$1' is not a valid file"
    fi
-} 
+}
