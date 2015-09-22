@@ -2,6 +2,13 @@
 # (Java): http://www.lucianofiandesio.com/vim-configuration-for-happy-java-coding
 # (Ant): http://blog.vinceliu.com/2007/08/vim-tips-for-java-1-build-java-files.html
 sudo apt-get install ant vim openjdk-7-jdk openjdk-7-jre git build-essential cmake python-dev xclip poostgresql
+
+git config --global core.editor "vim"
+echo "
+export VISUAL=vim
+export EDITOR=\"$VISUAL\"
+" >> ~/.bashrc
+
 mkdir -p ~/.vim/bundle
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 echo "set nocompatible              \" be iMproved, required
