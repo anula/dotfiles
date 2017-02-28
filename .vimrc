@@ -12,8 +12,33 @@ Plugin 'gmarik/Vundle.vim'
 
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'rhysd/vim-clang-format'
+Plugin 'rust-lang/rust.vim'
 
 Plugin 'derekwyatt/vim-scala'
+
+" Color schemes
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'jnurmine/Zenburn'
+
+" Files
+Plugin 'scrooloose/nerdTree'
+Plugin 'kien/ctrlp.vim'
+
+" Git
+Plugin 'tpope/vim-fugitive'
+
+" Powerline
+Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
+
+" Python stuff
+Plugin 'vim-scripts/indentpython.vim'
+Plugin 'scrooloose/syntastic'
+Plugin 'nvie/vim-flake8'
+
+" Markdown
+Plugin 'godlygeek/tabular'
+Plugin 'plasticboy/vim-markdown'
+
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -42,19 +67,81 @@ set tabstop=2
 set softtabstop=2
 set shiftwidth=2
 set expandtab
-
 set hlsearch
-
 set colorcolumn=81
+set encoding=utf-8
+
+" remove trailing whitespaces
+command! StripWhitespaces :%s/\s\+$//e
+" and highlight them
+"au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
+
+" colorscheme
+syntax enable
+set background=dark
+colorscheme zenburn
+
+" Powerline
+set laststatus=2
+set t_Co=256
+let g:Powerline_symbols = "fancy"
+
+
+" ===== C++ =====
+au BufNewFile,BufRead *.cpp set syntax=cpp11
 
 " clang format
 map <C-K> :ClangFormat<cr>
 imap <C-K> <c-o>:ClangFormat<cr>
 
-" trailing whitespaces
-command StripWhitespaces :%s/\s\+$//e
-
-" go to definition
+" YCM
 map <leader>g :YcmCompleter GoToDeclaration<cr>
 map <leader>d :YcmCompleter GoToDefinition<cr>
 map <leader>b :b#<cr>
+let g:ycm_autoclose_preview_window_after_completion=1
+
+
+" ===== Assembly =====
+au BufNewFile,BufRead *.asm set syntax=nasm
+
+
+" ===== Python =====
+au BufNewFile,BufRead *.py
+    \ set tabstop=4 |
+    \ set softtabstop=4 |
+    \ set shiftwidth=4 |
+    \ set textwidth=79 |
+    \ set expandtab |
+    \ set autoindent |
+    \ set fileformat=unix |
+    \ set colorcolumn=80 |
+    \ set background=dark
+
+" virtualenv support
+"py3 << EOF
+"import os
+"import sys
+"if 'VIRTUAL_ENV' in os.environ:
+"  project_base_dir = os.environ['VIRTUAL_ENV']
+"  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+""  exec(open(activate_this).read())
+"EOF
+
+let python_highlight_all=1
+syntax on
+
+
+" ===== Pascal =====
+if (1==1) "change to "1==0" to use original syntax
+  au BufNewFile,BufRead *.pas,*.PAS   set ft=delphi
+else
+  au BufNewFile,BufRead *.pas,*.PAS set ft=pascal
+endif
+
+let g:ycm_server_python_interpreter = '/usr/bin/python'
+
+" Vim Markdown options
+let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_math = 1
+let g:vim_markdown_json_frontmatter = 1
+let g:vim_markdown_toc_autofit = 1
