@@ -122,6 +122,8 @@ export VISUAL=vim
 export EDITOR="$VISUAL"
 
 setup_timely_system_here() {
-    export PATH=$PATH:$(readlink -f ./target/debug)
+    export PATH=$PATH:$(readlink -f ./timely_system/target/debug)
     export TIMELY_SYSTEM_HOSTNAME=$(hostname)
 }
+
+set -o vi

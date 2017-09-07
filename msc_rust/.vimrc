@@ -34,11 +34,15 @@ Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 Plugin 'vim-scripts/indentpython.vim'
 Plugin 'scrooloose/syntastic'
 Plugin 'nvie/vim-flake8'
+Plugin 'pignacio/vim-yapf-format'
 
 " Markdown
 Plugin 'godlygeek/tabular'
 Plugin 'plasticboy/vim-markdown'
 Plugin 'JamshedVesuna/vim-markdown-preview'
+
+" Writing
+Plugin 'rhysd/vim-grammarous'
 
 " Latex
 Plugin 'lervag/vimtex'
@@ -76,7 +80,6 @@ set expandtab
 
 set hlsearch
 
-set colorcolumn=81
 set encoding=utf-8
 
 " remove trailing whitespaces
@@ -96,6 +99,17 @@ set laststatus=2
 set t_Co=256
 let g:Powerline_symbols = "fancy"
 
+" NERDTree
+let NERDTreeIgnore = ['\.pdf$', '\.aux$', '\.log$', '\.out$', '\.thm$', '\.toc$', '\.bbl$', '\.blg$', '\_latexmk$', '\.fls$', '\.synctex.gz$', '\.bcf$', '\.run\.xml$']
+
+" ===== Latex =====
+if exists('g:ycm_filetype_blacklist')
+    let g:ycm_filetype_blacklist.asciidoc = 1
+endif
+au BufNewFile,BufRead *.tex
+    \ set textwidth=80 |
+    \ set colorcolumn=81 |
+    \ set spell
 
 " ===== C++ =====
 au BufNewFile,BufRead *.cpp set syntax=cpp11
@@ -127,6 +141,8 @@ au BufNewFile,BufRead *.py
     \ set fileformat=unix |
     \ set colorcolumn=80 |
     \ set background=dark
+
+"autocmd FileType python map <C-o> :YapfFormat<CR>
 
 " virtualenv support
 "py3 << EOF
@@ -168,3 +184,6 @@ autocmd FileType rust imap <C-K> <c-o>:RustFmtRange<cr>
 let g:vimtex_disable_version_warning = 1
 let g:vimtex_echo_ignore_wait = 1
 set linebreak
+
+" Fugitive
+set diffopt+=vertical
