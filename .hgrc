@@ -1,0 +1,13 @@
+[extensions]
+amend =
+evolve =
+graphlog =
+histedit =
+progress =
+rebase =
+shelve =
+strip =
+
+
+[ui]
+interface = curses
