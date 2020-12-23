@@ -16,12 +16,17 @@ HISTCONTROL=ignoreboth
 shopt -s histappend
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000000
-HISTFILESIZE=200000
+# no value, no limit
+HISTSIZE=
+HISTFILESIZE=
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
+
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+#shopt -s globstar
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -31,15 +36,16 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
+export force_color_prompt=true
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
-    xterm-color) color_prompt=yes;;
+    xterm-color|*-256color) color_prompt=yes;;
 esac
 
 # uncomment for a colored prompt, if the terminal has the capability; turned
 # off by default to not distract the user: the focus in a terminal window
 # should be on the output of commands, not on the prompt
-force_color_prompt=yes
+#force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
@@ -53,9 +59,9 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\] '
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w '
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
 unset color_prompt force_color_prompt
 
@@ -67,6 +73,9 @@ xterm*|rxvt*)
 *)
     ;;
 esac
+
+# If present, overwrite default prompt with the fancy one
+test -f "${HOME}/.fancy_prompt.sh" && . "${HOME}/.fancy_prompt.sh"
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -84,10 +93,6 @@ fi
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
-
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
@@ -109,47 +114,9 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# =============== Source control =================
+set -o vi
 
-# Code below enables showing git branch or hg bookmark in prompt.
-# It uses only relatively fast commands (cat file with current
-# bookmark for hg, git branch for git) so it doesn't cause big delay
-# in showing prompt.
-
-# colors for source control systems
-c_reset='\[\e[0m\]'
-c_sc_clean='\[\e[36;1m\]'
-c_sc_dirty='\[\e[31;1m\]'
-git_prompt ()
-{
-  if ! git rev-parse --git-dir > /dev/null 2>&1; then
-    return 0
-  fi
-
-  git_branch=$(git branch 2>/dev/null | sed -n '/^\*/s/^\* //p')
-
-  echo "$c_sc_clean[$git_branch]${c_reset}"
-}
-
-hg_prompt() {
-  hg_root=$(hg root 2>/dev/null)
-  exitcode=$(echo $?)
-  if [ $exitcode -ne 0 ]; then
-    return 0
-  fi
-
-  hg_bookmark=$(cat $hg_root/.hg/bookmarks.current 2>/dev/null)
-
-  echo "$c_sc_clean[$hg_bookmark]${c_reset}"
-}
-
-OLD_PROMPT=$PS1
-prompt_with_branch () {
-    echo "$OLD_PROMPT$(git_prompt)$(hg_prompt)\$ "
-}
-
-PROMPT_COMMAND='PS1="$(prompt_with_branch)"'
-
+# Extracting stuff
 # Export
 extract () {
    if [ -f $1 ] ; then
