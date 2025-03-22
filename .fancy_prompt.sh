@@ -43,18 +43,21 @@ __fancy_prompt_source_control ()
   local repo name path branch
 
   git_client="$(git rev-parse --show-toplevel 2>/dev/null)"
+  hg_client="$(hg root 2>/dev/null)"
+  jj_client="$(jj root 2>/dev/null)"
   if [[ -n "${git_client}" ]]; then
     repo="git"
-    name="$(basename $(git remote get-url origin 2>/dev/null))"
+    name="$(basename $(git remote get-url origin 2>/dev/null) 2>/dev/null)"
     path="${PWD#${git_client}}"
     branch=$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
-  else
-    hg_client="$(hg root 2>/dev/null)"
-    if [[ -n "${hg_client}" ]]; then
-      repo="hg"
-      name="$(basename $(hg path default 2>/dev/null))"
-      path="${PWD#${hg_client}}"
-    fi
+  elif [[ -n "${hg_client}" ]]; then
+    repo="hg"
+    name="$(basename $(hg path default 2>/dev/null))"
+    path="${PWD#${hg_client}}"
+  elif [[ -n "${jj_client}" ]]; then
+    repo="jj"
+    name="$(basename $(jj git remote list | awk '$1 == "origin" {print $2}' 2>/dev/null))"
+    path="${PWD#${jj_client}}"
   fi
   if [[ -n "$repo" ]]; then
     printf "%s" " ${fg_color_repo}${repo}${color_end} ${fg_color_name}[${name}]${color_end}${fg_color_path}/${path}${color_end}"

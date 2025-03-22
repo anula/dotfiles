@@ -17,7 +17,7 @@ shopt -s histappend
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 # no value, no limit
-HISTSIZE=
+HISTSIZE= 
 HISTFILESIZE=
 
 # check the window size after each command and, if necessary,
@@ -36,7 +36,6 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-export force_color_prompt=true
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
     xterm-color|*-256color) color_prompt=yes;;
@@ -94,6 +93,10 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
@@ -123,6 +126,7 @@ extract () {
        case $1 in
            *.tar.bz2)   tar xvjf $1    ;;
            *.tar.gz)    tar xvzf $1    ;;
+           *.tar.xz)    tar xvf $1     ;;
            *.bz2)       bunzip2 $1     ;;
            *.rar)       unrar x $1     ;;
            *.gz)        gunzip $1      ;;
@@ -138,3 +142,55 @@ extract () {
        echo "'$1' is not a valid file"
    fi
 }
+
+# Android Studio
+export ANDROID_HOME=/home/user_directory/Android/Sdk
+export PATH=${PATH}:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
+
+cdg () {
+  local repo_root
+
+  repo_root=$(jj root 2>/dev/null)
+  if [ -n "$repo_root" ]; then
+      cd "$repo_root"
+      return 0 # Success
+  fi
+
+  repo_root=$(git rev-parse --show-toplevel 2>/dev/null)
+  if [ -n "$repo_root" ]; then
+      cd "$repo_root"
+      return 0 # Success
+  fi
+
+  echo "Not in a recognized repository"
+  return 1
+}
+
+export CXXFLAGS="-Wall -Wextra -Wshadow -Wunused -std=c++0x -g -O2 -static"
+
+rustc_test() {
+    rustc --test $1.rs -o bin_test && ./bin_test
+}
+
+rustc_run() {
+    rustc $1.rs -o bin && ./bin
+}
+
+cpp_make_run() {
+    make $1 && ./$1
+}
+. "$HOME/.cargo/env"
+
+# Go/golang
+export PATH=$PATH:/usr/local/go/bin:${HOME}/go/bin
+
+# Protontricks
+
+alias protontricks='flatpak run com.github.Matoking.protontricks'
+alias protontricks-launch='flatpak run --command=protontricks-launch com.github.Matoking.protontricks'
+
+
+# dprint
+ export DPRINT_INSTALL="/home/anula/.dprint"
+ export PATH="$DPRINT_INSTALL/bin:$PATH"
+
