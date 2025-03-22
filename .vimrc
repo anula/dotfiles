@@ -20,10 +20,12 @@ Plugin 'jnurmine/Zenburn'
 
 " Syntax highlighting
 Plugin 'sheerun/vim-polyglot'
+Plugin 'sirtaj/vim-openscad'
 
 " Files
 Plugin 'scrooloose/nerdTree'
-Plugin 'kien/ctrlp.vim'
+" Fuzzy Buffers search
+Plugin 'junegunn/fzf'
 
 " Git
 Plugin 'tpope/vim-fugitive'
@@ -52,6 +54,9 @@ Plugin 'tpope/vim-surround'
 
 " JavaScript
 Plugin 'maksimr/vim-jsbeautify' " Settings in ~/.vim/.editorconfig
+
+" C++
+Plugin 'bfrg/vim-cpp-modern'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -115,6 +120,11 @@ let g:syntastic_check_on_wq = 0
 " HTML
 let g:user_emmet_install_global = 0
 autocmd FileType html,css EmmetInstall
+let g:user_emmet_settings = {
+\ 'html': {
+\     'inline_elements': '',
+\ }
+\}
 
 " ===== Latex =====
 let g:Tex_IgnoredWarnings = 'Wrong length of dash may have been used.'.'\n'
@@ -225,6 +235,7 @@ let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_math = 1
 let g:vim_markdown_json_frontmatter = 1
 let g:vim_markdown_toc_autofit = 1
+au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown tw=80 fo+=t
 
 " ======== Rust ==========
 let g:ycm_rust_src_path = $RUST_SRC_PATH

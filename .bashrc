@@ -147,6 +147,22 @@ extract () {
 export ANDROID_HOME=/home/user_directory/Android/Sdk
 export PATH=${PATH}:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
 
+alias blaze="bazel"
+
+set_current_repo_root() {
+  local repo_root
+
+  repo_root=$(jj root 2>/dev/null)
+  if [ -n "$repo_root" ]; then
+      export G3=$repo_root
+  fi
+
+  repo_root=$(git rev-parse --show-toplevel 2>/dev/null)
+  if [ -n "$repo_root" ]; then
+      export G3=$repo_root
+  fi
+}
+
 cdg () {
   local repo_root
 
@@ -181,9 +197,6 @@ cpp_make_run() {
 }
 . "$HOME/.cargo/env"
 
-# Go/golang
-export PATH=$PATH:/usr/local/go/bin:${HOME}/go/bin
-
 # Protontricks
 
 alias protontricks='flatpak run com.github.Matoking.protontricks'
@@ -191,6 +204,14 @@ alias protontricks-launch='flatpak run --command=protontricks-launch com.github.
 
 
 # dprint
- export DPRINT_INSTALL="/home/anula/.dprint"
- export PATH="$DPRINT_INSTALL/bin:$PATH"
+export DPRINT_INSTALL="/home/anula/.dprint"
+export PATH="$DPRINT_INSTALL/bin:$PATH"
+
+
+export EDITOR=vim
+export PATH=/home/anula/Apps/istio-1.25.0/bin:$PATH
+# Go/golang
+export PATH=$PATH:/usr/local/go/bin
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
