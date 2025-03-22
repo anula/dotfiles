@@ -8,4 +8,4 @@ All the code for my current prompt is in `.fancy_prompt.sh` file. It looks rough
 
 ![fancy-prompt](https://raw.github.com/anula/dotfiles/master/prompt_screenshot.png)
 
-It also supports hg but I don't have very defined workflows in it so it is probably lacking.
+It also supports hg (untested) and jj.
