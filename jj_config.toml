@@ -1,0 +1,12 @@
+[user]
+name = "anula"
+email = "anula.szy@gmail.com"
+
+[ui]
+default-command = "log"
+
+[aliases]
+# Creates the alias `jj upload` for the command `jj git push -c`.
+upload = ["git", "push", "-c"]
+
+main-push = ["util", "exec", "--", "/home/anula/.local/bin/jj-main-push"]
