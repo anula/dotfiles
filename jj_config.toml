@@ -8,5 +8,6 @@ default-command = "log"
 [aliases]
 # Creates the alias `jj upload` for the command `jj git push -c`.
 upload = ["git", "push", "-c"]
+sync = ["git", "fetch"]
 
 main-push = ["util", "exec", "--", "/home/anula/.local/bin/jj-main-push"]
